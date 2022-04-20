@@ -1,9 +1,9 @@
-## Tutorial para construir una red génica con la herramienta Weighted Correlation Network Analysis (WGCNA)
-PhD Student. Cynthia G. Soto Cardinualt; cyntsc10@gmail.com; linkedin.com/in/cynthiacardinault
+## Tutorial para construir una red de coexpresión génica con la herramienta WGCNA (Weighted-Correlation Network Analysis)
+PhD STU.Cynthia Soto Cardinualt; cyntsc10@gmail.com; linkedin.com/in/cynthiacardinault; Centro de Investigación Científica de Yucátan
 
 **Package:** WGCNA <br>
 **Versión:** 1.70-3 <br>
-Date: 18-04-2022 <br>
+**Date:** 2021-02-2017 <br>
 
 **Nombre de la herramienta:** Weighted Correlation Network Analysis <br>
 **Autor:** Peter Langfelder <Peter.Langfelder@gmail.com> and Steve Horvath <SHorvath@mednet.ucla.edu> with contributions by Chaochao Cai, Jun Dong, Jeremy Miller, Lin Song, Andy Yip, and Bin Zhang <br>
@@ -14,40 +14,55 @@ Date: 18-04-2022 <br>
 <hr/>
 
 #### Resumen
-La rápida aceptación y beneficios que han traído las tecnologías de secuenciación de próxima generación, particularmente RNASeq, ha acelerado el despliegue de métodos de análisis disponibles para ómicas, favoreciendo el descubrimiento de muchos aspectos biológicos relevantes. <br> 
-En el análisis de datos de expresión genética, cuando no se tienen datos etiquetados y se desea explorar o descubrir patrones genéticos se puede recurrir a métodos de Machine Learning (ML) no supervisados, como el Clustering. <br> 
-En este mini-curso, utilizando transcriptomas RNASeq de plantas infectadas por hongos, se muestra como construir una red de coexpresión para identificar patrones genéticos que responden a la  infección. Se utiliza la herramienta Weighted Correlation Network Analysis (WGCNA) (Langfelder & Horvath, 2008) disponible para R a través de Bioconductor.<br>
+La rápida aceptación y beneficios que han traído las tecnologías de secuenciación de próxima generación, particularmente RNASeq, ha acelerado el despliegue de métodos de análisis disponibles para ómicas favoreciendo el descubrimiento de muchos aspectos biológicos relevantes. <br> 
+En el análisis de datos de coexpresión génica cuando se desea explorar o descubrir patrones génicos de respuesta coordinada ante determinada condición de estudio, se puede recurrir a la utilización de métodos de Aprendizaje Automático (Machine Learning/ML) no supervisados, asumiendosé que se tiene datos de alta dimensión no etiquetados, y suficientes muestras. De entre los diversos enfoques de ML, las técnicas de Agrupamiento (Clustering) han demostrado ser útiles en el análisis de este tipo de datos, y de entre los muchos algoritmos existentes, el Agrupamiento Jerárquico (hCLust) ha sido uno de los más efectivos. <br> 
+En este mini-curso, utilizando transcriptomas RNA-Seq de plantas infectadas por hongos, se muestra como construir una red de coexpresión para identificar patrones génicos que responden a la  infección causada por hongos. Se utiliza la herramienta Weighted Correlation Network Analysis (WGCNA) (Langfelder & Horvath, 2008) disponible para R a través de Bioconductor.<br>
 
 #### Objetivos de aprendizaje:
 <ol>
-  <li>Conocer los conceptos generales del Clustering</li>
+  <li>Conocer los conceptos generales de redes y del clustering jerárquico</li>
   <li>Conocer las principales funciones de la herramienta WGCNA</li>
   <li>Construir una red con signo con la herramienta WGCNA
     <ol>
-      <li>Descargar los datos de análisis</li>
-      <li>Calcular y leer las propiedades topológicas de una red</li>
-      <li>Definir métricas y umbrales de corte para la construcción de la red</li>
-      <li>Vincular la red con meta-datos para identificar patrones de interés</li>
+      <li>Preparar el entorno en R</li>
+      <li>Descargar los datos a utilizar en el análisis</li>
+      <li>Calcular e interpretar las propiedades topológicas de la red</li>
+      <li>Definir un umbrales de corte para la construcción de una red con signo (met=p)</li>
+        <ol>
+          <li>Contruir una red estandar basada en dissimilitudes</li>
+          <li>Contruir una red fusionada a partir de la red estandar</li>
+        </ol>
+      <li>Vincular la red creada con meta-datos para identificar patrones de interés</li>
       <li>Aprender a identificar módulos altamente correlacionados, y sus propiedades</li>
-      <li>Aprender a descargar los módulos y sus gráficos para su post-análisis</li>
+      <li>Aprender a validar la importancia de un módulo a partir de sus métricas de significancia (Student asymptotic p-value) y membresía al módulo</li>
+      <li>Aprender a guardar los objetos de datos para su post-análisis</li>
+      <li>Aprender a descargar los módulos para su post-análisis</li>
     </ol>
   </li>
 </ol> 
 
 <hr/>
 
-#### Prerequisites:
+#### Prerequisitos:
 La versión actual del paquete WGCNA solo funcionará con la versión R 3.0.0 y superior. Si tiene una versión anterior de R, actualice su R. <br><br>
-El paquete WGCNA requiere la instalación de los siguientes paquetes: stats, grDevices, utils, matrixStats (0.8.1 or higher), Hmisc, splines, foreach, doParallel, fastcluster, dynamicTreeCut, survival, parallel, preprocessCore, GO.db, impute, and AnnotationDbi. Si su sistema no los tiene instalados, puedes seguir las instrucciones dadas en  https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/, o tambien puede ejecutar y/o adaptar las líneas de código proporcionadas en el script 1. <br>
+El paquete WGCNA requiere la instalación de los siguientes paquetes: stats, grDevices, utils, matrixStats (0.8.1 or higher), Hmisc, splines, foreach, doParallel, fastcluster, dynamicTreeCut, survival, parallel, preprocessCore, GO.db, impute, and AnnotationDbi. Si su sistema no los tiene instalados, puedes seguir las instrucciones dadas en **[CoexpressionNetwork/Rpackages/WGCNA](https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/)** o también pueden adaptar las primeras líneas de código proporcionadas en el **script 1_***. <br>
 
 #### Depencias: R (+3.0), dynamicTreeCut (+1.62), fastcluster <br>
 Bibliotecas a importar: stats, grDevices, utils, matrixStats (>= 0.8.1), Hmisc, impute, splines, foreach, doParallel, preprocessCore, survival <br><br>
 
 Si desea primero checar si ya tiene instalados algunos de estos paquetes puede ejecutar la siguiente línea en el prompt de R: <br>
-a<-installed.packages() <br>
-packages<-a[,1] <br>
-is.element("AnnotationDbi", packages)    #letras en negrita son el nombre del paquete a checar <br><br>
 
+<div style="background-color: rgb(50, 50, 50);">
+
+``python
+a<-installed.packages(); 
+packages<-a[,1];
+is.element("WGCNA", packages);  
+``
+
+</div>    
+    
+    
 <hr/>
 
 #### Material incluido:
